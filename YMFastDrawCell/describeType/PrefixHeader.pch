@@ -1,0 +1,31 @@
+//
+//  PrefixHeader.pch
+//  百思
+//
+//  Created by 夜幕 on 16/11/21.
+//  Copyright © 2016年 yemu. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+
+
+
+#import "UIView+YMFrameExtension.h"
+#import "YMConstance.h"
+#import "YMTestModel.h"
+
+//颜色
+#define YMColor(r,g,b,a)  [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
+
+#define YMRandomColor [UIColor colorWithRed:arc4random_uniform(255)/255.0 green:arc4random_uniform(255)/255.0 blue:arc4random_uniform(255)/255.0 alpha:1]
+#define YMGlobalBGColor YMColor(241,241,241,1)
+
+
+
+
+
+
+
+#endif
