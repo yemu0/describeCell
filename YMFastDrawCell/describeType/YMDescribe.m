@@ -52,10 +52,10 @@
             NSString *str = [NSString stringWithFormat:@"%@:%@",testM.comments[index].name,testM.comments[index].content];
             label.text = str;
         
-            [label ym_setupAttributeColorWithTextArray:@[testM.comments[index].name,@"我是评论_我是"]];
+            [label ym_setupAttributeColorWithTextArray:@[testM.comments[index].name,@"论_我是评论"]];
             
             [label ym_clickActive:^(NSString *string) {
-                NSLog(@" %@ 评论点击 点击",string);
+                NSLog(@" %@  点击",string);
             }];
         }];
     }];

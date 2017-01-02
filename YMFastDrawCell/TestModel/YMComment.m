@@ -19,9 +19,9 @@
     cmt.name = [NSString stringWithFormat:@"评论人%03zd",i++];
     
     
-    NSInteger number = arc4random_uniform(10)+2;
+    NSInteger number = arc4random_uniform(10)+4;
     NSMutableString *strM = [NSMutableString string];
-    
+  
     for (int n=0; n<number; n++) {
         
         [strM appendString:@"我是评论_"];

@@ -163,51 +163,100 @@
     return self.ym_height;
 }
 //根据字符串长度获取字符串大小
--(CGSize)getSizeWithRange:(NSRange)range{
+-(CGSize)getSizeWithtext:(NSString *)text{
     
-    NSString *str = [self.text substringWithRange:range];
+   
     NSDictionary *dict = @{
                            NSFontAttributeName:self.font
                            };
-    return [str sizeWithAttributes:dict];
+    return [text sizeWithAttributes:dict];
     
 }
+
+//返回一个lable每行文本数组
+-(NSArray *)rowTextArray{
+    
+    NSMutableArray *arrM = [NSMutableArray array];
+    NSInteger loc = 0;
+    NSString *str = self.text;
+    for (int i=0; i<self.text.length; i++) {
+        
+        NSString *text = [self.text substringWithRange:NSMakeRange(loc,i-loc)];
+        CGSize pointSize = [self getSizeWithtext:text];
+        if((NSInteger)(pointSize.width/self.ym_width)>0){
+       
+            [arrM addObject:[str substringToIndex:i-loc-1]];
+            str = [str substringFromIndex:i-loc-1];
+            loc = i;
+        }
+    }
+    
+    [arrM addObject:str];
+    return arrM;
+}
+
 //判断点是在字符串内
 -(BOOL)ym_textContainsPoint:(NSRange)range point:(CGPoint)point{
     
-    CGSize pointSize = [self getSizeWithRange:NSMakeRange(0,range.location)];
+    NSString *text = [self.text substringWithRange:NSMakeRange(0,range.location)];
+    CGSize pointSize = [self getSizeWithtext:text];
+    
     CGFloat x = pointSize.width;
     CGFloat y = pointSize.height - self.font.pointSize;
     
-    CGSize size = [self getSizeWithRange:range];
-   
-    //超出的行数
+    CGSize size = [self getSizeWithtext:[self.text substringWithRange:range]];
+    //在第几行
     NSInteger number = (x+size.width)/ self.ym_width;
-    //每行的宽度
-    CGRect rect;
-    for (NSInteger i=0; i<number; i++) {
-      
-        if(i==0){
-            rect = CGRectMake(x,y,self.ym_width-x,size.height);
+    
+    //判断有没跨行
+    CGFloat temp = x;
+    //获取每行的文字数组
+    NSArray *arr = [self rowTextArray];
+    NSInteger tempRowNumber;
+    
+    //精确获取文字在的行数
+    for (int i=0; i<arr.count; i++) {
+        NSString *str = arr[i];
+        CGFloat rowWidth = [self getSizeWithtext:str].width;
+        temp -= rowWidth;
+        if(temp<0){
+            tempRowNumber=i;
+            break;
+        }
+        //文字位置减去前几行的length
+        range.location -= str.length;
+    }
+    //判断文字是否跨行
+    if(tempRowNumber !=number){
+        CGRect rect;
+        for (NSInteger i=0; i<arr.count; i++) {
+            NSString *str = arr[i];
+            CGFloat rowWidth = [self getSizeWithtext:str].width;
+            if(i==0){
+                rect = CGRectMake(x,y,rowWidth-x,size.height);
+                if(CGRectContainsPoint(rect, point)==YES)
+                    return YES;
+            }
+            
+            //每次减去上一行的宽度
+            size.width -= rowWidth-x;
+            y += pointSize.height;
+            x = 0;
+            if(size.width<0)
+                return NO;
+            rect = CGRectMake(x,y,size.width,size.height);
             if(CGRectContainsPoint(rect, point)==YES)
                 return YES;
         }
-        
-        //每次减去上一行的宽度
-        size.width -= self.ym_width-x;
-        y += pointSize.height;
-        x = 0;
-        CGFloat width = size.width;
-        if(width>self.ym_width)
-            width = self.ym_width;
-        
-        rect = CGRectMake(x,y,width,size.height);
-        if(CGRectContainsPoint(rect, point)==YES)
-            return YES;
-    }
-    if(number>0)
         return NO;
-   
+    }
+    //没跨行情况下
+    NSString *str = arr[number];
+
+    pointSize = [self getSizeWithtext:[str substringWithRange:NSMakeRange(0, range.location)]];
+    x = pointSize.width;
+    y = (pointSize.height - self.font.pointSize)+(number*pointSize.height);
+    size = [self getSizeWithtext:[str substringWithRange:range]];
     return CGRectContainsPoint(CGRectMake(x, y, size.width,size.height), point);
     
 }
