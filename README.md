@@ -2,7 +2,7 @@
 fast Describe tableView cell
 
 # struct
-![image](https://github.com/cell.png)
+![image](https://github.com/yemu0/describeCell/cell.png)
 
 # Examples [示例]
 
