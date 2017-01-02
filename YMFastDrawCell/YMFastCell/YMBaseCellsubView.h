@@ -59,7 +59,7 @@ typedef void(^ym_setupFrame)();
 /** 根据控件计算view自身大小*/
 -(CGFloat)ym_GetSelfViewHeight;
 
-/**添加手势
+/**添加手势https://github.com/yemu0/describeCell
  参数1:手势类型
  参数2:给那个view
  参数3:手势激活后
