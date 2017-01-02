@@ -2,8 +2,33 @@
 fast Describe tableView cell
 
 # struct
-![image](https://github.com/yemu0/describeCell/blob/master/cell.png)
+![image](https://github.com/yemu0/describeCell/blob/master/readmeImage/cellStruct.png)
 
+#functionExplain
+##addView 
+```objc
+/** 根据类名添加view 没有则创建 */
+-(id)ym_addSubViewWithClass:(Class) objectClass identifier:(NSString *) identifier;
+
+/** 
+ * 根据标识符取出view
+ * @param objectClass    view 的类型
+ * @param identifier    取出这个view时候使用
+ * @param view          初始化viewblock
+ * @param isCreate      如果没有是否创建
+ */
+-(id)ym_addSubViewWithClass:(Class) objectClass identifier:(NSString *) identifier initializeView:(void(^)(UIView *view)) view isCreate:(BOOL) isCreate;
+
+```
+##addGestureRecognizer
+```objc
+/**添加手势
+ 参数1:手势类型
+ 参数2:给那个view
+ 参数3:手势激活后
+ */
+-(void)ym_addGestureRecognizerTypeWithClass:( Class) gestureClass targetView:( UIView *)targetView activeBlock:( void(^)(UIView *view))active;
+```
 # Examples [示例]
 
 ### 百思示例
