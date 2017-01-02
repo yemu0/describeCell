@@ -43,6 +43,9 @@
             btn.backgroundColor = YMGlobalBGColor;
             [btn setTitle:[NSString stringWithFormat:@"赞%zd",i++] forState:UIControlStateNormal];
         }];
+        [cell.ym_footerView ym_toolsSubviewsClick:^(UIButton *btn) {
+            NSLog(@"%@被点击了",btn.titleLabel.text);
+        }];
         //设置评论内容
         [cell.ym_footerView ym_addCommentViewWithNumber:testM.comments.count setupComment:^(YMCommentLabel *label, NSInteger index) {
            
@@ -55,7 +58,6 @@
                 NSLog(@" %@ 评论点击 点击",string);
             }];
         }];
-    
     }];
      //===========微博描述====================
     //两个cell共有内容

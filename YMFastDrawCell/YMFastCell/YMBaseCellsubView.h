@@ -47,11 +47,6 @@ typedef void(^ym_setupFrame)();
  */
 -(id)ym_addSubViewWithClass:(Class) objectClass identifier:(NSString *) identifier initializeView:(void(^)(UIView *view)) view isCreate:(BOOL) isCreate;
 
-/** 根据标识符取出view 没有返回空*/
--(id)ym_dequeueReusableViewWithidentifier:(NSString *) identifier;
-
-/** 添加view 传递一个view */
--(void)ym_addSubViewWithView:(UIView *) view identifier:(NSString *) identifier;
 
 /** 开始绘制 */
 -(void)ym_startDraw;
@@ -59,7 +54,7 @@ typedef void(^ym_setupFrame)();
 /** 根据控件计算view自身大小*/
 -(CGFloat)ym_GetSelfViewHeight;
 
-/**添加手势https://github.com/yemu0/describeCell
+/**添加手势
  参数1:手势类型
  参数2:给那个view
  参数3:手势激活后

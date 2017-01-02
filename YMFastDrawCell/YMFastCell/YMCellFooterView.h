@@ -28,7 +28,6 @@
 /**
  * 添加评论栏
  */
-//夜幕:我是评论
 typedef void(^commentBlock)(YMCommentLabel *label,NSInteger index);
 
 -(void)ym_addCommentViewWithNumber:(NSInteger)number
