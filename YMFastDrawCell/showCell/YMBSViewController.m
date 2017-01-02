@@ -60,11 +60,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    //查看有多少个ceLl
+    //获取模型
     YMTestModel *testM = self.testModelArray[indexPath.row];
     
+    //根据 ymBaisi_Identifier 标识符获取描述的块
     YMDescribeCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:tableView Identifier:ymBaisi_Identifier model:testM adjustment:nil];
-    
+    //开始绘制
     [cell ym_startDescribe];
     [tableView setRowHeight:cell.ym_height];
     

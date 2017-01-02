@@ -23,7 +23,6 @@ typedef void(^ym_setupFrame)();
 @property (nonatomic,assign) NSInteger ym_margin;
 
 
-
 /** 统一设置view属性 静态属性设置*/
 @property (nonatomic,strong) void(^ym_subViewLoad)(id caller,UIView *loadView);
 
