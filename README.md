@@ -1,6 +1,9 @@
 # describeCell
 fast Describe tableView cell
 
+# struct
+![image](https://github.com/yemu0/describeCell/blob/master/cell.png)
+
 # Examples [示例]
 
 ### 百思示例
