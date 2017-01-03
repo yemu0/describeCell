@@ -13,6 +13,9 @@
 @property (nonatomic,strong) NSArray *rangeArray;
 @property (nonatomic,strong) void (^active)(NSString *);
 
+//传递的类型是字符串 还是精确。 精确为YES
+@property (nonatomic,assign) BOOL isSetupType;
+
 @end
 @implementation YMCommentLabel
 
@@ -78,6 +81,7 @@
     NSString *str = NSStringFromRange(range);
     self.rangeArray = @[str];
     self.attributedText = attributedString;
+    self.isSetupType = YES;
 }
 
 -(void)ym_setupAttributeColorWithArray:(NSArray<NSString *> *)array{
@@ -90,6 +94,7 @@
     }
     self.rangeArray = array;
     self.attributedText = attributedString;
+     self.isSetupType = YES;
 }
 -(NSArray *)rangeArrayWithString:(NSString *)string{
     
@@ -198,6 +203,7 @@
 //判断点是在字符串内
 -(BOOL)ym_textContainsPoint:(NSRange)range point:(CGPoint)point{
     
+    
     NSString *text = [self.text substringWithRange:NSMakeRange(0,range.location)];
     CGSize pointSize = [self getSizeWithtext:text];
     
@@ -265,8 +271,8 @@
     
  
     for (NSString *str in self.rangeArray) {
-        NSRange range = NSRangeFromString(str);
-        if(range.length ==0){
+
+        if(self.isSetupType == NO){
             //传入的是字符串模式
             NSArray *rangeArr = [self rangeArrayWithString:str];
             for (int i=0; i<rangeArr.count;i++) {
@@ -277,6 +283,7 @@
         }
         else{
             //传入是具体模式
+            NSRange range = NSRangeFromString(str);
             if([self ym_textContainsPoint:range point:point]==YES)
                 return range;
         }
