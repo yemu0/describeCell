@@ -4,6 +4,8 @@ fast Describe tableView cell
 # struct
 ![image](https://github.com/yemu0/describeCell/blob/master/readmeImage/cellStruct.png)
 
+![image](https://github.com/yemu0/describeCell/blob/master/readmeImage/show.gif)
+
 #functionExplain
 ##addView 
 ```objc
