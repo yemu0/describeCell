@@ -1,14 +1,18 @@
 //
-//  YMDescribeCell.m
+//  YMTableViewCell.m
 //  YMCell封装测试
 //
 //  Created by 夜幕 on 16/12/2.
 //  Copyright © 2016年 yemu. All rights reserved.
 //
 
-#import "YMDescribeCell.h"
+#import "YMTableViewCell.h"
 #import "UIView+YMFrameExtension.h"
-@interface YMDescribeCell()
+#import "YMCellHeaderView.h"
+#import "YMCellCenterView.h"
+#import "YMCellFooterView.h"
+
+@interface YMTableViewCell()
 
 @property (nonatomic,assign) BOOL isLoadHeaderView;
 
@@ -24,7 +28,7 @@
 
 @end
 
-@implementation YMDescribeCell
+@implementation YMTableViewCell
 
 
 #pragma mark 懒加载
@@ -198,15 +202,14 @@
     return self;
 }
 -(void)setFrame:(CGRect)frame{
-  
+
     frame.size.height -= self.ym_cellMargin;
-    
     [super setFrame:frame];
 }
 
 -(void)dealloc{
     
-    NSLog(@"cell dealloc");
+    NSLog(@"cell dealloc %p",self);
 }
 
 

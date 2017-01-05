@@ -15,7 +15,7 @@
 		A24B80481DFEC9AD00DF2608 /* YMBaseCellsubView.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B80411DFEC9AD00DF2608 /* YMBaseCellsubView.m */; };
 		A24B80491DFEC9AD00DF2608 /* YMCellHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B80431DFEC9AD00DF2608 /* YMCellHeaderView.m */; };
 		A24B804A1DFEC9AD00DF2608 /* YMCellCenterView.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B80451DFEC9AD00DF2608 /* YMCellCenterView.m */; };
-		A24B804B1DFEC9AD00DF2608 /* YMDescribeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B80471DFEC9AD00DF2608 /* YMDescribeCell.m */; };
+		A24B804B1DFEC9AD00DF2608 /* YMTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B80471DFEC9AD00DF2608 /* YMTableViewCell.m */; };
 		A24B80511DFECA1800DF2608 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B804E1DFECA1800DF2608 /* AppDelegate.m */; };
 		A24B80531DFECA1800DF2608 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B80501DFECA1800DF2608 /* main.m */; };
 		A24B80571DFECA6F00DF2608 /* YMBSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A24B80561DFECA6F00DF2608 /* YMBSViewController.m */; };
@@ -32,8 +32,9 @@
 		A2684FFA1E06AFF90094AC02 /* YMCellFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2684FF91E06AFF90094AC02 /* YMCellFooterView.m */; };
 		A26E75731E1113310030DACF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A26E75721E1113310030DACF /* Assets.xcassets */; };
 		A2710C7A1E121FC6009505DB /* YMTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2710C791E121FC6009505DB /* YMTableView.m */; };
-		A2710CBC1E1280F9009505DB /* YMCommentLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = A2710CBB1E1280F9009505DB /* YMCommentLabel.m */; };
+		A2710CBC1E1280F9009505DB /* YMLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = A2710CBB1E1280F9009505DB /* YMLabel.m */; };
 		A2710CBF1E128BEB009505DB /* YMComment.m in Sources */ = {isa = PBXBuildFile; fileRef = A2710CBE1E128BEB009505DB /* YMComment.m */; };
+		A27688891E1E515F00FBB9CC /* UITableView+YMCellHeightCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A27688881E1E515F00FBB9CC /* UITableView+YMCellHeightCache.m */; };
 		A284A7241E096E7C008C2C16 /* YMPictureView.m in Sources */ = {isa = PBXBuildFile; fileRef = A284A7231E096E7C008C2C16 /* YMPictureView.m */; };
 		A284A7271E0971E2008C2C16 /* YMPictureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A284A7261E0971E2008C2C16 /* YMPictureCell.m */; };
 /* End PBXBuildFile section */
@@ -73,8 +74,8 @@
 		A24B80431DFEC9AD00DF2608 /* YMCellHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMCellHeaderView.m; sourceTree = "<group>"; };
 		A24B80441DFEC9AD00DF2608 /* YMCellCenterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMCellCenterView.h; sourceTree = "<group>"; };
 		A24B80451DFEC9AD00DF2608 /* YMCellCenterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMCellCenterView.m; sourceTree = "<group>"; };
-		A24B80461DFEC9AD00DF2608 /* YMDescribeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMDescribeCell.h; sourceTree = "<group>"; };
-		A24B80471DFEC9AD00DF2608 /* YMDescribeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMDescribeCell.m; sourceTree = "<group>"; };
+		A24B80461DFEC9AD00DF2608 /* YMTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMTableViewCell.h; sourceTree = "<group>"; };
+		A24B80471DFEC9AD00DF2608 /* YMTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMTableViewCell.m; sourceTree = "<group>"; };
 		A24B804D1DFECA1800DF2608 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		A24B804E1DFECA1800DF2608 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		A24B80501DFECA1800DF2608 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -105,14 +106,17 @@
 		A26E75721E1113310030DACF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2710C781E121FC6009505DB /* YMTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMTableView.h; sourceTree = "<group>"; };
 		A2710C791E121FC6009505DB /* YMTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMTableView.m; sourceTree = "<group>"; };
-		A2710CBA1E1280F9009505DB /* YMCommentLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMCommentLabel.h; sourceTree = "<group>"; };
-		A2710CBB1E1280F9009505DB /* YMCommentLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMCommentLabel.m; sourceTree = "<group>"; };
+		A2710CBA1E1280F9009505DB /* YMLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMLabel.h; sourceTree = "<group>"; };
+		A2710CBB1E1280F9009505DB /* YMLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMLabel.m; sourceTree = "<group>"; };
 		A2710CBD1E128BEB009505DB /* YMComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMComment.h; sourceTree = "<group>"; };
 		A2710CBE1E128BEB009505DB /* YMComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMComment.m; sourceTree = "<group>"; };
+		A27688871E1E515F00FBB9CC /* UITableView+YMCellHeightCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+YMCellHeightCache.h"; sourceTree = "<group>"; };
+		A27688881E1E515F00FBB9CC /* UITableView+YMCellHeightCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+YMCellHeightCache.m"; sourceTree = "<group>"; };
 		A284A7221E096E7C008C2C16 /* YMPictureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMPictureView.h; sourceTree = "<group>"; };
 		A284A7231E096E7C008C2C16 /* YMPictureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMPictureView.m; sourceTree = "<group>"; };
 		A284A7251E0971E2008C2C16 /* YMPictureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMPictureCell.h; sourceTree = "<group>"; };
 		A284A7261E0971E2008C2C16 /* YMPictureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YMPictureCell.m; sourceTree = "<group>"; };
+		A28893091E1CD58300A5F87C /* YMDescribeCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YMDescribeCell.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,14 +221,17 @@
 				A24B80431DFEC9AD00DF2608 /* YMCellHeaderView.m */,
 				A24B80441DFEC9AD00DF2608 /* YMCellCenterView.h */,
 				A24B80451DFEC9AD00DF2608 /* YMCellCenterView.m */,
-				A24B80461DFEC9AD00DF2608 /* YMDescribeCell.h */,
-				A24B80471DFEC9AD00DF2608 /* YMDescribeCell.m */,
+				A24B80461DFEC9AD00DF2608 /* YMTableViewCell.h */,
+				A24B80471DFEC9AD00DF2608 /* YMTableViewCell.m */,
 				A2684FF81E06AFF90094AC02 /* YMCellFooterView.h */,
 				A2684FF91E06AFF90094AC02 /* YMCellFooterView.m */,
 				A25F264D1E07B51C00ACC438 /* YMCellManager.h */,
 				A25F264E1E07B51C00ACC438 /* YMCellManager.m */,
-				A2710CBA1E1280F9009505DB /* YMCommentLabel.h */,
-				A2710CBB1E1280F9009505DB /* YMCommentLabel.m */,
+				A2710CBA1E1280F9009505DB /* YMLabel.h */,
+				A2710CBB1E1280F9009505DB /* YMLabel.m */,
+				A28893091E1CD58300A5F87C /* YMDescribeCell.h */,
+				A27688871E1E515F00FBB9CC /* UITableView+YMCellHeightCache.h */,
+				A27688881E1E515F00FBB9CC /* UITableView+YMCellHeightCache.m */,
 			);
 			path = YMFastCell;
 			sourceTree = "<group>";
@@ -418,11 +425,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A25F26531E07F07700ACC438 /* YMDescribe.m in Sources */,
+				A27688891E1E515F00FBB9CC /* UITableView+YMCellHeightCache.m in Sources */,
 				A24B80481DFEC9AD00DF2608 /* YMBaseCellsubView.m in Sources */,
 				A24B805A1DFECB1700DF2608 /* YMSuduko.m in Sources */,
-				A2710CBC1E1280F9009505DB /* YMCommentLabel.m in Sources */,
+				A2710CBC1E1280F9009505DB /* YMLabel.m in Sources */,
 				A24B80611DFED0F500DF2608 /* UIView+YMFrameExtension.m in Sources */,
-				A24B804B1DFEC9AD00DF2608 /* YMDescribeCell.m in Sources */,
+				A24B804B1DFEC9AD00DF2608 /* YMTableViewCell.m in Sources */,
 				A2710CBF1E128BEB009505DB /* YMComment.m in Sources */,
 				A24B80511DFECA1800DF2608 /* AppDelegate.m in Sources */,
 				A2684FFA1E06AFF90094AC02 /* YMCellFooterView.m in Sources */,

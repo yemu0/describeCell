@@ -33,10 +33,10 @@ typedef void(^ym_setupFrame)();
 -(void)ym_setupFrame:(ym_setupFrame)setupFrame;
 
 /** 设置view的属性,每个cell只会执行一次 */
--(void)ym_setAttribute: (ym_setAttributeBlock) setBlock;
+-(void)ym_setupAttribute: (ym_setAttributeBlock) setBlock;
 
-/** 根据类名添加view 没有则创建 */
--(id)ym_addSubViewWithClass:(Class) objectClass identifier:(NSString *) identifier;
+/** 根据view类型创建view 标识符代表这个view 没有则创建 */
+-(id)ym_addSubviewWithClass:(Class) objectClass identifier:(NSString *) identifier initializeView:(void(^)(UIView *view)) view;
 
 /** 
  * 根据标识符取出view
@@ -47,6 +47,12 @@ typedef void(^ym_setupFrame)();
  */
 -(id)ym_addSubViewWithClass:(Class) objectClass identifier:(NSString *) identifier initializeView:(void(^)(UIView *view)) view isCreate:(BOOL) isCreate;
 
+/**添加手势
+ 参数1:手势类型
+ 参数2:给那个view
+ 参数3:手势激活后
+ */
+-(void)ym_addGestureRecognizerTypeWithClass:( Class) gestureClass targetView:( UIView *)targetView activeBlock:( void(^)(UIView *view))active;
 
 /** 开始绘制 */
 -(void)ym_startDraw;
@@ -54,11 +60,6 @@ typedef void(^ym_setupFrame)();
 /** 根据控件计算view自身大小*/
 -(CGFloat)ym_GetSelfViewHeight;
 
-/**添加手势
- 参数1:手势类型
- 参数2:给那个view
- 参数3:手势激活后
- */
--(void)ym_addGestureRecognizerTypeWithClass:( Class) gestureClass targetView:( UIView *)targetView activeBlock:( void(^)(UIView *view))active;
+
 
 @end

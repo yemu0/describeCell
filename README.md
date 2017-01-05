@@ -36,34 +36,44 @@ fast Describe tableView cell
 ### 百思示例
 ```objc
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     //获取模型
     YMTestModel *testM = self.testModelArray[indexPath.row];
-    
+
     //根据 ymBaisi_Identifier 标识符获取描述的块
-    YMDescribeCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:tableView Identifier:ymBaisi_Identifier model:testM adjustment:nil];
+    YMTableViewCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:tableView Identifier:ymBaisi_Identifier model:testM adjustment:nil];
+
+    cell.ym_cellMargin = 0;
+
     //开始绘制
     [cell ym_startDescribe];
-    [tableView setRowHeight:cell.ym_height];
-    
+    //缓存高度
+    [tableView ym_cacheRowHeight:cell.ym_height indexPath:indexPath];
+
     return cell;
-}
+    }
+
+
+    -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    return [tableView ym_getRowHeightWithIndexPath:indexPath];
+    }
+
 ```
 
 ```objc
 
- //===========百思描述  ymBaisi_Identifier====================
-    [[YMCellManager defaultManager] ym_describeCellWithIdentifier:ymBaisi_Identifier describe:^(YMDescribeCell *cell, NSObject *model) {
+    [[YMCellManager defaultManager] ym_describeCellWithIdentifier:ymBaisi_Identifier describe:^(YMTableViewCell *cell, NSObject *model) {
         //模型为ym_getCellDescribeWithTableView 传进来的模型
         YMTestModel *testM = (YMTestModel *)model;
         //设置头部内容
         cell.ym_headerView.ym_titleLabel.text = testM.name;
         cell.ym_headerView.ym_subLabel.text = testM.createTimer;
         cell.ym_headerView.ym_imageView.image = [UIImage imageNamed:testM.imageName];
-        
+
         //只会设置一次
-        [cell.ym_headerView ym_setAttribute:^{
+        [cell.ym_headerView ym_setupAttribute:^{
             cell.ym_headerView.ym_imageView.layer.cornerRadius = 22;
             cell.ym_centerView.ym_miniImageSize = CGSizeMake(cell.ym_centerView.ym_width, 0);
         }];
@@ -71,27 +81,55 @@ fast Describe tableView cell
         //设置中间内容
         cell.ym_centerView.ym_imageSize = testM.imageSize;
         cell.ym_centerView.ym_imageView.image = [UIImage imageNamed:testM.imageName];
-       
+
         //设置尾部内容
         __block int i=0;
         [cell.ym_footerView ym_addToolsViewWithNumber:4 margin:1 toolViewHeight:44 setupSubviews:^(UIButton *btn, UIView *toolsView) {
-            [btn setTitleColor:[UIColor grayColor] forState: UIControlStateNormal];
+        [btn setTitleColor:[UIColor grayColor] forState: UIControlStateNormal];
             btn.backgroundColor = YMGlobalBGColor;
             [btn setTitle:[NSString stringWithFormat:@"赞%zd",i++] forState:UIControlStateNormal];
         }];
+        [cell.ym_footerView ym_toolsSubviewsClick:^(UIButton *btn) {
+            NSLog(@"%@被点击了",btn.titleLabel.text);
+        }];
         //设置评论内容
-        [cell.ym_footerView ym_addCommentViewWithNumber:testM.comments.count setupComment:^(YMCommentLabel *label, NSInteger index) {
-           
+        [cell.ym_footerView ym_addCommentViewWithNumber:testM.comments.count setupComment:^(YMLabel *label, NSInteger index) {
+
             NSString *str = [NSString stringWithFormat:@"%@:%@",testM.comments[index].name,testM.comments[index].content];
             label.text = str;
-        
-            [label ym_setupAttributeColorWithTextArray:@[testM.comments[index].name,@"我是评论_我是"]];
-            
-            [label ym_clickActive:^(NSString *string) {
-                NSLog(@" %@ 评论点击 点击",string);
+
+            //设置最大行数
+            label.limitLine = 2;
+
+            //设置那个字符串改变颜色
+            [label ym_setupAttributeColorWithTextArray:@[testM.comments[index].name]];
+
+            //赋值lable展示状态
+            label.ym_showtype = testM.comments[index].labelShowType;
+
+
+            __weak YMTableViewCell *weakcell = cell;
+
+            //改变展开状态block
+            [label ym_changeShowType:^(YMLabelShowType type) {
+            //赋值模型的showType
+            testM.comments[index].labelShowType = type;
+
+            //如果为展开或者收起 刷新数据
+            if(type==YMLabelShowTypePackup ||type == YMLabelShowTypeUnfold){
+
+            UITableView *tb = (UITableView *)weakcell.superview.superview;
+
+            NSIndexPath *ip = [[YMCellManager defaultManager] ym_getIndexPathWithView:label];
+            [tb reloadRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationNone];
+            }
             }];
+            //当设置的ym_setupAttributeColorWithTextArray 被点击的block
+            [label ym_clickActive:^(NSString *string) {
+
+            }];
+
         }];
     }];
-}
 ```
 

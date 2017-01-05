@@ -8,7 +8,7 @@
 
 #import "YMCellFooterView.h"
 #import "UIView+YMFrameExtension.h"
-#import "YMCommentLabel.h"
+#import "YMLabel.h"
 @interface YMCellFooterView()
 
 @property(nonatomic,weak) UIView *toolsView;
@@ -116,9 +116,9 @@
     
     //少于创建 显示
     for (NSInteger i=0; i<number; i++) {
-        YMCommentLabel *view;
+        YMLabel *view;
         if(count<=i){
-            view = [[YMCommentLabel alloc]init];
+            view = [[YMLabel alloc]init];
             [self.commentsView addSubview:view];
         }
         view = self.commentsView.subviews[i];
@@ -127,7 +127,7 @@
     //多余隐藏
     if(count>number){
         for (NSInteger i=number; i<count; i++) {
-            YMCommentLabel *view = self.commentsView.subviews[i];
+            YMLabel *view = self.commentsView.subviews[i];
             view.hidden = YES;
         }
     }
@@ -140,15 +140,18 @@
     
     self.commentsView.backgroundColor = YMGlobalBGColor;
     
-    for (YMCommentLabel *commentView in self.commentsView.subviews) {
+    for (YMLabel *commentView in self.commentsView.subviews) {
         
         if(commentView.hidden == YES)
             continue;
         comment(commentView,index);
- 
         commentView.ym_y = self.commentsView.ym_height;
-        commentView.ym_width = self.ym_width;
-        self.commentsView.ym_height += [commentView ym_getContentHeight];
+        
+        if(commentView.ym_width==0)
+            commentView.ym_width = self.ym_width;
+        
+        [commentView ym_countSize];
+        self.commentsView.ym_height += commentView.ym_height;
         index++;
     }
    

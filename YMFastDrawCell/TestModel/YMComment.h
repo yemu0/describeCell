@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "YMLabel.h"
 
 @interface YMComment : NSObject
 
@@ -14,5 +15,7 @@
 
 @property (nonatomic,strong) NSString *content;
 
+//是否展开
+@property (nonatomic,assign) YMLabelShowType  labelShowType;
 +(instancetype) commentCreate;
 @end

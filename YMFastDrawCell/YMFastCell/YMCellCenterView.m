@@ -8,7 +8,8 @@
 
 #import "YMCellCenterView.h"
 #import "UIView+YMFrameExtension.h"
-
+#import "YMSuduko.h"
+#import "YMLabel.h"
 @interface YMCellCenterView ()
 
 @property (nonatomic,assign)BOOL isLoadImageView;
@@ -63,8 +64,6 @@
     
 }
 
-
-
 -(UIImageView *)ym_imageView{
     
     
@@ -80,12 +79,12 @@
     
 }
 
--(UILabel *)ym_contentLable{
+-(YMLabel *)ym_contentLable{
     
     
     if(_ym_contentLable ==nil){
         _isLoadcontentLable = YES;
-        UILabel *content = [[UILabel alloc]init];
+        YMLabel *content = [[YMLabel alloc]init];
         content.numberOfLines = 0;
         _ym_contentLable = content;
         [self addSubview:content];
@@ -96,34 +95,15 @@
 }
 #pragma -mark 重写
 
-
 -(void)dealloc{
     
     NSLog(@"centerView dealloc");
-}
--(CGRect)frame{
-
-    CGRect frame = [super frame];
-    
-    //view尺寸改变时候进入 外部自定义宽高的时候不进入
-    if(_isLoadcontentLable) {
-        if(_ym_labelMaxSize.width!=frame.size.width-self.ym_contentLable.ym_x&&_isSetupContentLabelMax == NO)
-            _ym_labelMaxSize = CGSizeMake(frame.size.width, MAXFLOAT);
-    }
-    return frame;
-}
-
-#pragma -mark 设置限制属性
--(void)setYm_labelMaxSize:(CGSize)ym_labelMaxSize{
-    
-    _ym_labelMaxSize = ym_labelMaxSize;
-    _isSetupContentLabelMax = YES;
 }
 
 -(CGSize)ym_maxImageSize{
     
     if(_ym_maxImageSize.height==0)
-        _ym_maxImageSize = CGSizeMake(self.frame.size.width, [UIScreen mainScreen].bounds.size.height-self.ym_margin*2);
+        return CGSizeMake(self.frame.size.width, [UIScreen mainScreen].bounds.size.height-self.ym_margin*2);
     
     return _ym_maxImageSize;
 
@@ -173,12 +153,7 @@
 }
 
 #pragma mark 设置自带控件
--(void)ym_setupContentLabel{
-   
-    CGSize expectSize = [self.ym_contentLable sizeThatFits:self.ym_labelMaxSize];
-    self.ym_contentLable.frame = CGRectMake(0,0, expectSize.width, expectSize.height);
-    
-}
+
 -(void)ym_setupImageView{
     
     //没有设置view 或者图片改变
@@ -253,10 +228,10 @@
 
 -(void)ym_startDraw{
     [super ym_startDraw];
-    //上面文字 下面image格式
+    
     if(_isLoadcontentLable){
-        
-        [self ym_setupContentLabel];
+        self.ym_contentLable.ym_width = self.ym_width;
+        [self.ym_contentLable ym_countSize];
     }
     if(_isLoadImageView){
         [self ym_setupImageView];
@@ -379,12 +354,12 @@
 }
 //九宫格布局
 -(void)ym_addSudokuLayoutWithClass:(Class)viewClass
-                      setSuduko:(void (^)(YMSuduko *))sudoku
-              setSudukoSubviews:(sudukoView)sudukoSubView
+                      setupSuduko:(void (^)(YMSuduko *))sudoku
+                    setupSubviews:(sudukoView)subView
 {
     
-    if(sudukoSubView)
-        self.sudukoViewBlock = sudukoSubView;
+    if(subView)
+        self.sudukoViewBlock = subView;
 
     //获取上一个的设置
     [self.lastSuduko sudukoWithSuduko:self.sudukoData];

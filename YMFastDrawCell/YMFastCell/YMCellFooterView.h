@@ -7,10 +7,11 @@
 //
 
 #import "YMBaseCellsubView.h"
-#import "YMCommentLabel.h"
+
+@class YMLabel;
 @interface YMCellFooterView : YMBaseCellsubView
 
-
+typedef void (^commentBlock)(YMLabel *label,NSInteger index);
 /**
  * 添加工具条
  * @param number              数量
@@ -25,11 +26,11 @@
 /**工具条被点击的block*/
 -(void)ym_toolsSubviewsClick:(void(^)(UIButton *btn)) btnClick;
 
+
+
 /**
  * 添加评论栏
  */
-typedef void(^commentBlock)(YMCommentLabel *label,NSInteger index);
-
 -(void)ym_addCommentViewWithNumber:(NSInteger)number
                        setupComment:(commentBlock)comment;
 @end

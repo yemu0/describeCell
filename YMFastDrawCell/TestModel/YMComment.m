@@ -20,6 +20,7 @@
     
     
     NSInteger number = arc4random_uniform(10)+4;
+
     NSMutableString *strM = [NSMutableString string];
   
     for (int n=0; n<number; n++) {

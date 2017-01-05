@@ -8,11 +8,9 @@
 
 #import "YMWeiboCollectionViewController.h"
 #import "YMTestModel.h"
-#import "YMDescribeCell.h"
-#import "YMCellManager.h"
 #import "YMTestForwardModel.h"
 #import "YMConstance.h"
-
+#import "YMDescribeCell.h"
 #import "YMPictureView.h"
 @interface YMWeiboCollectionViewController ()
 
@@ -69,11 +67,11 @@
     YMTestModel *testM = self.testModelArray[indexPath.row];
     
  
-    YMDescribeCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:self.tableView Identifier:ymWeiBoCell_Identifier model:testM adjustment:^(YMDescribeCell *cell, NSObject *model) {
+    YMTableViewCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:self.tableView Identifier:ymWeiBoCell_Identifier model:testM adjustment:^(YMTableViewCell *cell, NSObject *model) {
     
         //当有的时候才创建 view占用少可以这样 占用多根据重用最终都回有值
-        YMDescribeCell *forwarCell = [cell.ym_centerView ym_addSubViewWithClass:[YMDescribeCell class] identifier:@"forwarCell" initializeView:^(UIView *view) {
-            YMDescribeCell *cell = (YMDescribeCell *)view;
+        YMTableViewCell *forwarCell = [cell.ym_centerView ym_addSubViewWithClass:[YMTableViewCell class] identifier:@"forwarCell" initializeView:^(UIView *view) {
+            YMTableViewCell *cell = (YMTableViewCell *)view;
             cell.ym_width = [UIScreen mainScreen].bounds.size.width;
             cell.ym_x = -10;
             //取消cell之间自动留10间距
@@ -87,6 +85,7 @@
        
         //转发的被点击时候传入的数据
         __weak typeof(self) weakself = self;
+        
         [forwarCell.ym_centerView ym_sudukoActiveModels:^NSArray *(UIView *view) {
             
             NSIndexPath *indexPath = [[YMCellManager defaultManager] ym_getIndexPathWithView:view];
@@ -104,10 +103,9 @@
         [cell.ym_centerView ym_setupFrame:^{
             forwarCell.ym_y = weakCT.ym_contentLable.ym_bottom+10;
         }];
-        //开始描述
-        [cell ym_startDescribe];
     }];
-    
+    //开始描述
+    [cell ym_startDescribe];
     [tableView setRowHeight:cell.ym_height];
      return cell;
 }

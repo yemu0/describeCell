@@ -8,7 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface YMCommentLabel : UILabel
+@interface YMLabel : UILabel
+
+typedef NS_ENUM(NSInteger, YMLabelShowType) {
+    YMLabelShowTypeUnfold = 1,
+    YMLabelShowTypePackup   = 2,
+    YMLabelShowTypeNone  = 3,
+};
+
+//判断当前是展开还是收起还是无
+@property (nonatomic,assign) YMLabelShowType ym_showtype;
 
 /**点击的时候是否显示背景颜色*/
 @property (nonatomic,assign) BOOL isShowTapBackgouradColor;
@@ -18,6 +27,23 @@
 
 /**默认状态下的高亮颜色*/
 @property (nonatomic,strong) UIColor *normalColor;
+
+/**展开字符串*/
+@property (nonatomic,strong) NSString *unfoldString;
+
+/**收起字符串*/
+@property (nonatomic,strong) NSString *packupString;
+
+/**限制的行数*/
+@property (nonatomic,assign) NSInteger limitLine;
+
+
+
+typedef void(^ym_changeType)(YMLabelShowType);
+
+
+-(void)ym_changeShowType:(ym_changeType) changeType;
+
 
 /**
  * 根据字符串rect  设置属性
@@ -48,8 +74,7 @@
 
 
 
--(CGFloat)ym_getContentHeight;
-
+-(void) ym_countSize;
 
 
 @end

@@ -7,17 +7,37 @@
 //
 
 #import "YMBSViewController.h"
-#import "YMDescribeCell.h"
+#import "YMTableViewCell.h"
 #import "YMTestModel.h"
 #import "YMCellManager.h"
 #import "YMTableView.h"
+#import "UITableView+YMCellHeightCache.h"
 @interface YMBSViewController ()
 
 @property (nonatomic,strong)NSMutableArray <YMTestModel *>*testModelArray;
 
+@property (nonatomic,strong) NSMutableArray *rowHeightArr;
+
 @end
 
 @implementation YMBSViewController
+
+
+-(NSMutableArray *)rowHeightArr{
+    
+    if(_rowHeightArr==nil){
+        _rowHeightArr = [NSMutableArray array];
+        
+    }
+    return _rowHeightArr;
+}
+//-(NSMutableDictionary *)rowHeightDict{
+//    
+//    if(_rowHeightDict ==nil){
+//        _rowHeightDict = [NSMutableDictionary dictionary];
+//    }
+//    return _rowHeightDict;
+//}
 
 -(NSMutableArray<YMTestModel *> *)testModelArray{
   
@@ -40,8 +60,9 @@
     
     self.tableView = [[YMTableView alloc]init];
     self.tableView.backgroundColor = [UIColor grayColor];
+    
+
     self.navigationItem.title = @"仿百思cell";
-    self.tableView.estimatedRowHeight = 300;
 }
 
 
@@ -64,13 +85,21 @@
     YMTestModel *testM = self.testModelArray[indexPath.row];
     
     //根据 ymBaisi_Identifier 标识符获取描述的块
-    YMDescribeCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:tableView Identifier:ymBaisi_Identifier model:testM adjustment:nil];
+    YMTableViewCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:tableView Identifier:ymBaisi_Identifier model:testM adjustment:nil];
+    
+    cell.ym_cellMargin = 0;
+
     //开始绘制
     [cell ym_startDescribe];
-    [tableView setRowHeight:cell.ym_height];
+    //缓存高度
+    [tableView ym_cacheRowHeight:cell.ym_height indexPath:indexPath];
     
     return cell;
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+
+    return [tableView ym_getRowHeightWithIndexPath:indexPath];
+}
 
 @end

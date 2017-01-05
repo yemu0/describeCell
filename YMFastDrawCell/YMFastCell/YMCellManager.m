@@ -7,6 +7,7 @@
 //
 
 #import "YMCellManager.h"
+#import "YMTableViewCell.h"
 
 @interface YMCellManager()
 
@@ -48,7 +49,7 @@ static YMCellManager *manager;
 }
 
 //获取之前描述的cell
--(YMDescribeCell *)ym_getCellDescribeWithTableView:(UITableView *)tableView
+-(YMTableViewCell *)ym_getCellDescribeWithTableView:(UITableView *)tableView
                                             Identifier:(NSString *)identifier
                                                  model:(NSObject *)model
                                             adjustment:(describeCell)adjustment{
@@ -58,10 +59,10 @@ static YMCellManager *manager;
         return nil;
     //判断是否注册类
     
-    YMDescribeCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    YMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if(cell==nil){
-        [tableView registerClass:[YMDescribeCell class] forCellReuseIdentifier:identifier];
+        [tableView registerClass:[YMTableViewCell class] forCellReuseIdentifier:identifier];
         cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     }
     
@@ -73,7 +74,7 @@ static YMCellManager *manager;
 }
 
 
--(void)ym_performBlockWithCell:(YMDescribeCell *)cell
+-(void)ym_performBlockWithCell:(YMTableViewCell *)cell
                     Identifier:(NSString *)identfier
                          model:(NSObject *)model{
     
@@ -128,12 +129,7 @@ static YMCellManager *manager;
     return [self ym_getCellWithView:view.superview superIsTableView:superIsTableView];
 }
 
--(CGRect)ym_getViewInWindowLocationWith:(UIView *)view{
-    
-    CGRect rect = [view.superview convertRect:view.frame toView:nil];
-    
-    return rect;
-}
+
 
 //移除
 -(void)ym_removeDecribeWithIdentifier:(NSString *)identifier{

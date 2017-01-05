@@ -48,13 +48,14 @@
 
 
 /** 动态添加view*/
--(id)ym_addSubViewWithClass:(Class)objectClass identifier:(NSString *)identifier{
+-(id)ym_addSubviewWithClass:(Class)objectClass identifier:(NSString *)identifier initializeView:(void (^)(UIView *))view{
     
 
     if([[self.identifierDict allKeys]containsObject:identifier]){
         return [self.identifierDict valueForKey:identifier];
     }
     id object = [[objectClass alloc]init];
+    view(object);
     [self addSubview:object];
     [self.identifierDict setValue:object forKey:identifier];
     
@@ -222,7 +223,7 @@
     self.setupFrameBlock = setupFrame;
 }
 
--(void)ym_setAttribute:(ym_setAttributeBlock)setBlock{
+-(void)ym_setupAttribute:(ym_setAttributeBlock)setBlock{
 
     if(self.isRunSetAttribute == NO){
         setBlock();
