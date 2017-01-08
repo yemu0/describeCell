@@ -13,11 +13,7 @@
 
 @interface YMTableViewCell: UITableViewCell
 
-/**属性*/
-@property (nonatomic,assign) BOOL isLoadCenterView;
-
-@property (nonatomic,assign) BOOL isLoadFooterView;
-
+typedef void(^ym_setAttributeBlock)();
 
 /**view */
 @property (nonatomic,weak) YMCellHeaderView *ym_headerView;
@@ -34,13 +30,13 @@
 /**开始绘制 必须执行一次*/
 -(void)ym_startDescribe;
 
+
 /**完成绘制后的block */
 -(void)ym_completionDescribe:(void(^)())completion;
 
+/** 设置view的属性,只会执行一次 */
+-(void)ym_setupAttribute: (ym_setAttributeBlock) setBlock;
 
--(void)drawCellHeaderView:(void (^)(YMCellHeaderView *headerView))headerView;
-
--(void)drawCellCenterContentView:(void (^)(YMCellCenterView *centerView))centerView;
 
 
 @end

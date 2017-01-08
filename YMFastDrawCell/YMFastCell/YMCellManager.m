@@ -53,36 +53,28 @@ static YMCellManager *manager;
                                             Identifier:(NSString *)identifier
                                                  model:(NSObject *)model
                                             adjustment:(describeCell)adjustment{
-    describeCell draw =  [self.identifierDict valueForKey:identifier];
-    //没有标识符
-    if(draw==nil)
-        return nil;
     //判断是否注册类
-    
     YMTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    
     if(cell==nil){
         [tableView registerClass:[YMTableViewCell class] forCellReuseIdentifier:identifier];
         cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     }
-    
-    draw(cell,model);
-    if(adjustment)
-        adjustment(cell,model);
+    [self ym_performDescribeWithCell:cell Identifier:identifier model:model adjustment:adjustment];
     
     return cell;
 }
 
-
--(void)ym_performBlockWithCell:(YMTableViewCell *)cell
+-(void)ym_performDescribeWithCell:(YMTableViewCell *)cell
                     Identifier:(NSString *)identfier
-                         model:(NSObject *)model{
-    
+                         model:(NSObject *)model
+                    adjustment:(describeCell)adjustment{
     
     describeCell draw =  self.identifierDict[identfier];
     if(draw==nil)
         return;
     draw(cell,model);
+    if(adjustment)
+        adjustment(cell,model);
     return;
 }
 -(NSIndexPath *)ym_getIndexPathWithView:(UIView *)view{
@@ -91,7 +83,6 @@ static YMCellManager *manager;
     UITableViewCell *cell = [self ym_getCellWithView:view superIsTableView:YES];
     
     UITableView *tableV = [self getTableViewWithCell:cell];
-    
     
     return [tableV indexPathForCell:cell];
 
@@ -128,8 +119,6 @@ static YMCellManager *manager;
     
     return [self ym_getCellWithView:view.superview superIsTableView:superIsTableView];
 }
-
-
 
 //移除
 -(void)ym_removeDecribeWithIdentifier:(NSString *)identifier{

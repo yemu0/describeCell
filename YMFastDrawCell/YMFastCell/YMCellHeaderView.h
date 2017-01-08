@@ -9,19 +9,18 @@
 
 #import "YMBaseCellsubView.h"
 
-@interface YMCellHeaderView : YMBaseCellsubView
+@class YMLabel;
 
+@interface YMCellHeaderView : YMBaseCellsubView
 
 @property (nonatomic,weak) UILabel *ym_titleLabel;
 
 /**使用subLabel 会自动加载titleLabel*/
-@property (nonatomic,weak) UILabel *ym_subLabel;
+@property (nonatomic,weak) YMLabel *ym_subLabel;
 
 
 @property (nonatomic,weak) UIImageView *ym_imageView;
 
-/**subLabel 限制的宽高 默认为view的宽度*/
-@property (nonatomic,assign) CGSize ym_subLabelMaxSize;
 
 
 

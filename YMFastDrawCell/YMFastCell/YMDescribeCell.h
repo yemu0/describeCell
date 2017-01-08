@@ -16,5 +16,6 @@
 #import "YMCellManager.h"
 #import "YMSuduko.h"
 #import "YMLabel.h"
+#import "UITableView+YMCellHeightCache.h"
 
 #endif /* YMDescribeCell_h */

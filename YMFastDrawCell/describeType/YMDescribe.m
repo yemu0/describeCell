@@ -21,21 +21,29 @@
     [[YMCellManager defaultManager] ym_describeCellWithIdentifier:ymBaisi_Identifier describe:^(YMTableViewCell *cell, NSObject *model) {
         //模型为ym_getCellDescribeWithTableView 传进来的模型
         YMTestModel *testM = (YMTestModel *)model;
+        __weak YMTableViewCell *weakcell = cell;
         //设置头部内容
         cell.ym_headerView.ym_titleLabel.text = testM.name;
         cell.ym_headerView.ym_subLabel.text = testM.createTimer;
         cell.ym_headerView.ym_imageView.image = [UIImage imageNamed:testM.imageName];
         
         //只会设置一次
-        [cell.ym_headerView ym_setupAttribute:^{
+        [cell ym_setupAttribute:^{
             cell.ym_headerView.ym_imageView.layer.cornerRadius = 22;
             cell.ym_centerView.ym_miniImageSize = CGSizeMake(cell.ym_centerView.ym_width, 0);
         }];
-
+        
         //设置中间内容
         cell.ym_centerView.ym_imageSize = testM.imageSize;
         cell.ym_centerView.ym_imageView.image = [UIImage imageNamed:testM.imageName];
-       
+        cell.ym_centerView.ym_contentLable.text = testM.content;
+        
+        if(testM.comments.count>=2){
+            cell.ym_centerView.ym_imageView.hidden = YES;
+        }else{
+             cell.ym_centerView.ym_imageView.hidden = NO;
+        }
+        
         //设置尾部内容
         __block int i=0;
         [cell.ym_footerView ym_addToolsViewWithNumber:4 margin:1 toolViewHeight:44 setupSubviews:^(UIButton *btn, UIView *toolsView) {
@@ -54,26 +62,20 @@
             
             //设置最大行数
             label.limitLine = 2;
-            
             //设置那个字符串改变颜色
             [label ym_setupAttributeColorWithTextArray:@[testM.comments[index].name]];
-
             //赋值lable展示状态
             label.ym_showtype = testM.comments[index].labelShowType;
-            
-            
-            __weak YMTableViewCell *weakcell = cell;
-            
+  
             //改变展开状态block
             [label ym_changeShowType:^(YMLabelShowType type) {
                 //赋值模型的showType
                 testM.comments[index].labelShowType = type;
-                
+
                 //如果为展开或者收起 刷新数据
                 if(type==YMLabelShowTypePackup ||type == YMLabelShowTypeUnfold){
                     
                     UITableView *tb = (UITableView *)weakcell.superview.superview;
-                    
                     NSIndexPath *ip = [[YMCellManager defaultManager] ym_getIndexPathWithView:label];
                     [tb reloadRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationNone];
                 }
@@ -82,7 +84,6 @@
             [label ym_clickActive:^(NSString *string) {
     
             }];
-            
         }];
     }];
      //===========微博描述====================
@@ -90,7 +91,7 @@
     [[YMCellManager defaultManager] ym_describeCellWithIdentifier:ymWeiBoCenter_Identifier describe:^(YMTableViewCell *cell, id model) {
         
             YMTestModel *testM = (YMTestModel *)model;
-            [cell.ym_centerView ym_setupAttribute:^ {
+            [cell ym_setupAttribute:^ {
                 [cell.ym_centerView.ym_contentLable setTextColor:[UIColor grayColor]];
             }];
             [cell.ym_centerView.ym_contentLable setText:testM.content];
@@ -135,14 +136,14 @@
         [cell.ym_headerView.ym_titleLabel setText:testM.name];
         cell.ym_headerView.ym_subLabel.text = testM.createTimer;
         
-        [cell.ym_headerView ym_setupAttribute:^{;
+        [cell ym_setupAttribute:^{;
             cell.ym_headerView.ym_imageView.layer.cornerRadius = 22;
             [cell.ym_headerView.ym_subLabel setTextColor:[UIColor blackColor]];
         }];
     
         cell.ym_headerView.ym_imageView.image = [UIImage imageNamed:testM.imageName];
         
-        [[YMCellManager defaultManager] ym_performBlockWithCell:cell Identifier:ymWeiBoCenter_Identifier model:model];
+        [[YMCellManager defaultManager] ym_performDescribeWithCell:cell Identifier:ymWeiBoCenter_Identifier model:model adjustment:nil];
         
         __block int i = 1;
         cell.ym_footerView.ym_margin = 0;
@@ -162,13 +163,13 @@
         
         YMTestModel *testM = (YMTestModel *)model;
         [cell.ym_headerView.ym_titleLabel setText:testM.forward.name];
-        [cell.ym_headerView ym_setupAttribute:^{;
+        [cell ym_setupAttribute:^{;
             [cell.ym_headerView.ym_titleLabel setTextColor:[UIColor blackColor]];
         }];
         
         //绘制中心内容
         if(testM.forward){
-            [[YMCellManager defaultManager] ym_performBlockWithCell:cell Identifier:ymWeiBoCenter_Identifier model:testM.forward];
+            [[YMCellManager defaultManager] ym_performDescribeWithCell:cell Identifier:ymWeiBoCenter_Identifier model:testM.forward adjustment:nil];
             cell.hidden = NO;
         }else
             cell.hidden = YES;

@@ -88,7 +88,7 @@
     YMTableViewCell *cell = [[YMCellManager defaultManager] ym_getCellDescribeWithTableView:tableView Identifier:ymBaisi_Identifier model:testM adjustment:nil];
     
     cell.ym_cellMargin = 0;
-
+    
     //开始绘制
     [cell ym_startDescribe];
     //缓存高度

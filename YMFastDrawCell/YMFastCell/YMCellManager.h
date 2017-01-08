@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @class YMTableViewCell;
-@interface YMCellManager : NSObject
 
+@interface YMCellManager : NSObject
 
 +(instancetype)defaultManager;
 
@@ -26,7 +26,7 @@ typedef void(^describeCell)(YMTableViewCell *cell,NSObject * model);
 -(void )ym_describeCellWithIdentifier:(NSString *)identifier
                                        describe:(describeCell)describe;
 /** 
- * 根据标识符取出对应的描述
+ * 根据标识符对cell执行某个描述,内部会自动注册cell
  * @param tableView              tableView
  * @param identifier             描述时候存放的标识符
  * @param model                  描述cell的模型
@@ -37,14 +37,17 @@ typedef void(^describeCell)(YMTableViewCell *cell,NSObject * model);
                                              model:(NSObject *)model
                                         adjustment:(describeCell) adjustment;
 
+
 /**根据标识符对传进来的cell执行某个描述 */
--(void)ym_performBlockWithCell:(YMTableViewCell *)cell
+-(void)ym_performDescribeWithCell:(YMTableViewCell *)cell
                     Identifier:(NSString *)identfier
-                         model:(NSObject *)model;
+                         model:(NSObject *)model
+                    adjustment:(describeCell) adjustment;
+
+
 
 /**根据view获取indexPath,这个view必须是tableView和cellView的子视图*/
 -(NSIndexPath*)ym_getIndexPathWithView:(UIView *)view;
-
 
 /**
  * 根据view获取cell

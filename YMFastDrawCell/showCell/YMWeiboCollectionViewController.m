@@ -81,7 +81,7 @@
         
         //传递一个cell 根据标识符绘制
         if(forwarCell)
-            [[YMCellManager defaultManager] ym_performBlockWithCell:forwarCell Identifier:ymWeiBoForwarFinish_Identifier model:testM];
+            [[YMCellManager defaultManager] ym_performDescribeWithCell:forwarCell Identifier:ymWeiBoForwarFinish_Identifier model:testM adjustment:nil];
        
         //转发的被点击时候传入的数据
         __weak typeof(self) weakself = self;

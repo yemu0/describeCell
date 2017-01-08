@@ -16,15 +16,16 @@
 
 @property (nonatomic,assign) BOOL isLoadHeaderView;
 
-@property (nonatomic,assign) BOOL isLayoutSubViewOK;
+/**属性*/
+@property (nonatomic,assign) BOOL isLoadCenterView;
+
+@property (nonatomic,assign) BOOL isLoadFooterView;
+
+@property (nonatomic,assign) BOOL isRunSetAttribute;
 
 @property (nonatomic,copy) void(^completionDescribe)();
 
-/** 存放手势激活块的数组*/
-@property (nonatomic,strong) NSMutableArray <ym_gestureActive>*ym_gestures;
 
-/** 存放手势view的数组*/
-@property (nonatomic,strong) NSMutableArray <UIView *>* ym_gestureViews;
 
 @end
 
@@ -32,27 +33,6 @@
 
 
 #pragma mark 懒加载
--(NSMutableArray<UIView *> *)ym_gestureViews{
-    
-    if(_ym_gestureViews ==nil){
-        
-        _ym_gestureViews = [NSMutableArray array];
-    }
-    
-    return _ym_gestureViews;
-
-}
--(NSMutableArray<ym_gestureActive> *)ym_gestures{
-    
-    if(_ym_gestures ==nil){
-        
-        _ym_gestures = [NSMutableArray array];
-    }
-    
-    return _ym_gestures;
-}
-
-
 -(YMCellHeaderView *)ym_headerView{
 
     if(_ym_headerView ==nil){
@@ -96,61 +76,6 @@
 #pragma -mark 方法
 
 
--(void)ym_addGestureRecognizerTypeWithClass:(Class)gestureClass targetView:(UIView *)targetView activeBlock:(void(^)(UIView *view))active{
-    
-    //判断是否已经添加过相同手势
-    for (UIGestureRecognizer *gesture in targetView.gestureRecognizers) {
-        
-        if( [gesture isKindOfClass:gestureClass]){
-            //替换块
-            int i = 0;
-            for (UIView *view in self.ym_gestureViews) {
-                if(view==targetView){
-                 self.ym_gestures[i] = active;
-                 break;
-                }
-            }
-            return;
-        }
-    }
-
-    UIGestureRecognizer *gesture = [[gestureClass alloc]init];
-    [gesture addTarget:self action:@selector(gestureActive:)];
-
-    [targetView addGestureRecognizer:gesture];
-    targetView.userInteractionEnabled = YES;
-    
-    //保存块
-    [self.ym_gestures addObject:active];
-    //保存view
-    [self.ym_gestureViews addObject:targetView];
-}
-
--(void)gestureActive:(UIGestureRecognizer *)gesture{
-    
-    //根据对应的view取出对应的激活块
-    int i=0;
-    for (UIView *view in self.ym_gestureViews) {
-        if(view == gesture.view){
-          ym_gestureActive avtive = self.ym_gestures[i];
-          avtive(view);
-          return;
-        }
-        i++;
-    }
-
-}
-
--(void)drawCellHeaderView:(void (^)(YMCellHeaderView *))headerView{
-    
-    headerView(self.ym_headerView);
-}
-
--(void)drawCellCenterContentView:(void (^)(YMCellCenterView *))centerView{
-    
-    centerView(self.ym_centerView);
-}
-
 
 -(void)ym_startDescribe{
     
@@ -163,9 +88,8 @@
     if(_isLoadCenterView){
         
         if(_isLoadHeaderView)
-            self.ym_centerView.ym_y = self.ym_headerView.ym_bottom+self.ym_centerView.ym_margin;
+            self.ym_centerView.ym_y = self.ym_headerView.ym_bottom;
         [self.ym_centerView ym_startDraw];
-      
         maxButtom = self.ym_centerView.ym_bottom;
     }
     if(_isLoadFooterView)
@@ -188,6 +112,14 @@
     
     if(!self.completionDescribe)
         self.completionDescribe = completion;
+}
+
+-(void)ym_setupAttribute:(ym_setAttributeBlock)setBlock{
+    
+    if(self.isRunSetAttribute == NO){
+        setBlock();
+        self.isRunSetAttribute = YES;
+    }
 }
 
 #pragma  -mark 重写

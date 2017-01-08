@@ -8,19 +8,14 @@
 
 #import "YMBaseCellsubView.h"
 #import "UIView+YMFrameExtension.h"
+#import <objc/runtime.h>
 @interface YMBaseCellsubView()
 
 
-@property (nonatomic,strong) NSMutableDictionary *identifierDict;
-
-@property (nonatomic,assign) BOOL isRunSetAttribute;
-
-/** 自定义frame如需依赖样式窗口frame 在这里设置最好*/
 @property (nonatomic,strong) ym_setupFrame setupFrameBlock ;
 
-/** 存放手势激活块的数组*/
+/** 存放手势激活块的字典*/
 @property (nonatomic,strong) NSMutableDictionary *ym_gesturesDict;
-
 
 
 @end
@@ -36,69 +31,46 @@
 }
 
 
--(NSMutableDictionary *)identifierDict{
-    if(_identifierDict==nil){
-        
-        _identifierDict = [NSMutableDictionary dictionary];
-    }
-    return _identifierDict;
-}
 
 #pragma -mark 属性
-
 
 /** 动态添加view*/
 -(id)ym_addSubviewWithClass:(Class)objectClass identifier:(NSString *)identifier initializeView:(void (^)(UIView *))view{
     
+    return [self ym_addSubViewWithClass:objectClass identifier:identifier initializeView:view isCreate:YES];
 
-    if([[self.identifierDict allKeys]containsObject:identifier]){
-        return [self.identifierDict valueForKey:identifier];
-    }
-    id object = [[objectClass alloc]init];
-    view(object);
-    [self addSubview:object];
-    [self.identifierDict setValue:object forKey:identifier];
-    
-    return object;
 }
 
 -(id)ym_addSubViewWithClass:(Class) objectClass
                  identifier:(NSString *) identifier
              initializeView:(void(^)(UIView *view)) view
                    isCreate:(BOOL) isCreate{
-
-    if([[self.identifierDict allKeys]containsObject:identifier]){
-        return [self.identifierDict valueForKey:identifier];
+    
+    id obj = objc_getAssociatedObject(self,(__bridge const void *)(identifier));
+    
+    if(!obj && isCreate == YES){
+        obj = [[objectClass alloc]init];
+        [self addSubview:obj];
+        view(obj);
+        objc_setAssociatedObject(self, (__bridge const void *)(identifier), obj,OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
-    if(isCreate==NO)
-        return nil;
-    id object = [[objectClass alloc]init];
-    [self addSubview:object];
-    [self.identifierDict setValue:object forKey:identifier];
-    view(object);
+
+    return obj;
+}
+
+-(id)ym_addSubviewWithClass:(Class)objectClass
+                 identifier:(NSString *)identifier
+             initializeView:(void (^)(UIView *))view
+                 tapGesture:(void (^)(UIView *))activate{
+    
+   UIView *object =  [self ym_addSubViewWithClass:objectClass identifier:identifier initializeView:view isCreate:YES];
+ 
+   [self ym_addGestureRecognizerTypeWithClass:[UITapGestureRecognizer class] targetView:object activeBlock:activate];
+   
     return object;
 }
 
-
-
--(id)ym_dequeueReusableViewWithidentifier:(NSString *)identifier{
-    
-    if([[self.identifierDict allKeys]containsObject:identifier]){
-        return [self.identifierDict valueForKey:identifier];
-    }
-    return nil;
-}
-
--(void)ym_addSubViewWithView:(UIView *)view identifier:(NSString *)identifier
-{
-    
-      [self addSubview:view];
-      [self.identifierDict setValue:view forKey:identifier];
-      return;
-}
-
-
--(void)ym_addGestureRecognizerTypeWithClass:(Class)gestureClass targetView:(UIView *)targetView activeBlock:(void(^)(UIView *view))active{
+-(void)ym_addGestureRecognizerTypeWithClass:(Class)gestureClass targetView:(UIView *)targetView activeBlock:(void(^)(UIView *view))activate{
     
     //判断是否已经添加过相同手势
     for (UIGestureRecognizer *gesture in targetView.gestureRecognizers) {
@@ -113,9 +85,8 @@
     
     [targetView addGestureRecognizer:gesture];
     targetView.userInteractionEnabled = YES;
-    
 
-    [self.ym_gesturesDict setValue:active forKey:[NSString stringWithFormat:@"%p",gesture]];
+    [self.ym_gesturesDict setValue:activate forKey:[NSString stringWithFormat:@"%p",gesture]];
     
 }
 -(void)gestureActive:(UIGestureRecognizer *)gesture{
@@ -129,28 +100,98 @@
 
 }
 
-
 -(void)ym_startDraw{
-    
+    [self ym_calculationSelfViewHeight];
 }
 
-#pragma -mark 动态计算自身frame
 
--(BOOL)ym_clearHideViewFrame:(NSMutableArray *)originalFrame{
-    BOOL isViewHide = NO;
+#pragma -mark 动态计算自身frame
+-(void)ym_clearHideViewFrame:(NSMutableArray *)originalFrame{
+ 
     for(UIView *view in self.subviews){
         if(view.hidden == YES)
         {
+            //获取绑定这个view 的views
+            CGFloat bottom = view.ym_bottom;
+            NSArray *views = [self ym_getViewsWithTargetView:view];
+            CGFloat lowButtom = 0;
+            if(views.count>0){
+                //y坐标设定为 比这个还高位的view的 bottom
+                lowButtom = [self nearButtomWithButtom:bottom views:views];
+            }
+            //存储原来的frame
             NSValue *value = nil;
             value = [NSValue valueWithCGRect:view.frame];
-            isViewHide = YES;
             [originalFrame addObject:value];
-            view.frame = CGRectZero;
-            
+            view.frame = CGRectMake(0, lowButtom,0,0);
         }
     }
-    return isViewHide;
+    return;
 }
+//获取依赖targetView的frame 的view数组
+-(NSArray *)ym_getViewsWithTargetView:(UIView *)targetView{
+
+    if(!self.setupFrameBlock)
+        return nil;
+    
+    //获取所有view的origin
+    NSMutableArray *arrM = [NSMutableArray array];
+    //保存原来的所有origin 坐标
+    for (UIView *_view in self.subviews) {
+        if(targetView == _view||_view.hidden) continue;
+        NSValue *value = nil;
+        value = [NSValue valueWithCGPoint:_view.frame.origin];
+        [arrM addObject:value];
+    }
+    
+    //执行修改frameBlock 判断是否依赖于这个view
+    targetView.frame = CGRectMake(-0.123, -0.123, 0, 0);
+    self.setupFrameBlock();
+    
+    int i=0;
+    NSMutableArray *views = [NSMutableArray array];
+    //对比原来的坐标 发生坐标改变 代表依赖于这个view
+    for (UIView *_view in self.subviews) {
+        
+        if(targetView == _view ||_view.hidden) continue;
+        NSValue *value = arrM[i++];
+        CGPoint point = value.CGPointValue;
+        if(!CGPointEqualToPoint(point,_view.frame.origin)){
+            [views addObject:_view];
+        }
+    }
+    return views;
+}
+//获取离Y值最近的一个view的buttom;
+-(CGFloat)nearButtomWithButtom:(CGFloat)buttom views:(NSArray *)views{
+    
+    CGFloat lowButtom = 0;//最低的y值
+    CGFloat dValue = MAXFLOAT;//差值
+
+    for (int i=0; i<self.subviews.count; i++) {
+        UIView *view = self.subviews[i];
+        if(view.hidden)continue;
+        
+        BOOL isView = false;
+        //判断这个view 是否依赖于这个view
+        for (UIView *v in views) {
+            if(v==view){
+                isView = true;
+                break;
+            }
+        }
+        if(view.ym_y >buttom||isView) continue;
+        
+        if(dValue >= buttom-view.ym_bottom){
+             dValue = buttom - view.ym_bottom;
+            if(lowButtom < view.ym_bottom)
+                lowButtom = view.ym_bottom;
+        }
+    }
+    return lowButtom;
+}
+
+
 -(void)ym_recoverHideViewFrame:(NSMutableArray *)originalFrame{
     
     if(originalFrame.count>0)
@@ -178,64 +219,42 @@
     return maxBottom;
     
 }
--(CGFloat)ym_GetSelfViewHeight{
+-(void)ym_calculationSelfViewHeight{
     
     CGFloat maxBottom = 0;
+    self.ym_height = 0;
     
-    if(self.subviews.count == 0) return 0;
+    if(self.subviews.count == 0) return;
     
     NSMutableArray *originalFrame=  [NSMutableArray array];
-    if([self ym_clearHideViewFrame:originalFrame])
-    {
-        self.ym_height = 0;
-        if(self.setupFrameBlock){
-            self.setupFrameBlock(self);
-        }
-        //计算当前view的最大高度
-        maxBottom = [self ym_CountMaxBottom];
-        //重新设置隐藏view的尺寸
-        for (UIView* view in self.subviews) {
-            if(view.hidden == YES)
-            {
-                view.ym_y = maxBottom;
-            }
-        }
-        //防止view绑定超过self高度 
-        self.ym_height = maxBottom;
+    
+    
+    [self ym_clearHideViewFrame:originalFrame];
 
-    }
-    //在重新绑定尺寸
     if(self.setupFrameBlock){
         self.setupFrameBlock();
     }
+    
     //在求出真正的高度
     maxBottom = [self ym_CountMaxBottom];
-    
     //还原隐藏的view的frame
     [self ym_recoverHideViewFrame:originalFrame];
     
-    return maxBottom;
+    self.ym_height = maxBottom;
+    if(self.isUserNormalLayout){
+        self.ym_height += self.ym_margin;
+    }
+    return;
 }
 
 #pragma -mark 设置属性
 -(void)ym_setupFrame:(ym_setupFrame)setupFrame{
     
-    self.setupFrameBlock = setupFrame;
+    if(!self.setupFrameBlock)
+        self.setupFrameBlock = setupFrame;
 }
-
--(void)ym_setupAttribute:(ym_setAttributeBlock)setBlock{
-
-    if(self.isRunSetAttribute == NO){
-        setBlock();
-        self.isRunSetAttribute = YES;
-    }
-}
-
-
-
 
 #pragma -mark 重写
-
 -(void)didMoveToSuperview{
     
     if(self.frame.size.width==0){
@@ -244,6 +263,7 @@
     self.ym_margin = 10;
     
 }
+
 
 -(instancetype)initWithFrame:(CGRect)frame{
 
@@ -262,9 +282,9 @@
     //当自己设置坐标宽度时候 不会加入margin
     //保存之前的大小
     NSInteger last = _ym_margin;
-    
     //赋值
     _ym_margin = ym_margin;
+    
     if(self.ym_width ==  self.superview.frame.size.width-last*2){
         self.ym_width -= ym_margin*2-last*2;
     }

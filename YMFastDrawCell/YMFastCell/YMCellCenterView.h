@@ -32,6 +32,9 @@ typedef void(^sudukoView)(id sudukoSubview,UIView *sudukoView,NSInteger index);
 /** imageView */
 @property (nonatomic,weak)  UIImageView *ym_imageView;
 
+@property (nonatomic,weak) YMLabel *ym_contentLable;
+
+
 /** 要下载的图片的尺寸 */
 @property (nonatomic,assign) CGSize ym_imageSize;
 
@@ -44,8 +47,6 @@ typedef void(^sudukoView)(id sudukoSubview,UIView *sudukoView,NSInteger index);
 /** 要图片最小的尺寸 */
 @property (nonatomic,assign) CGSize ym_miniImageSize;
 
-
-@property (nonatomic,weak) YMLabel *ym_contentLable;
 
 /** 位置类型*/
 @property (nonatomic,assign) YMDescribeType ym_describeType;
@@ -73,7 +74,6 @@ typedef void(^sudukoView)(id sudukoSubview,UIView *sudukoView,NSInteger index);
 -(void)ym_sudukoActiveModels:(NSArray *(^)(UIView *)) models;
 
 
-/**获取sudukoView的下标*/
--(NSInteger)ym_getSudukoIndexWithView:(UIView *)view;
+
 
 @end

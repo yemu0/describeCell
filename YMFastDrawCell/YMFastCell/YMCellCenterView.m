@@ -12,12 +12,6 @@
 #import "YMLabel.h"
 @interface YMCellCenterView ()
 
-@property (nonatomic,assign)BOOL isLoadImageView;
-
-@property (nonatomic,assign)BOOL isLoadcontentLable;
-
-@property (nonatomic,assign)BOOL isLoadSudukoView;
-
 @property (nonatomic,assign)BOOL isSetupContentLabelMax;
 
 @property (nonatomic,copy) sudukoView sudukoViewBlock;
@@ -38,9 +32,7 @@
 #pragma -mark 懒加载==============
 -(UIView *)sudukoView{
     
-   
     if(_sudukoView==nil){
-         _isLoadSudukoView = YES;
         UIView *view = [[UIView alloc]init];
         view.clipsToBounds = YES;
         [self addSubview:view];
@@ -68,7 +60,6 @@
     
     
     if(_ym_imageView ==nil){
-        _isLoadImageView = YES;
         UIImageView *imageV = [[UIImageView alloc]init];
         imageV.clipsToBounds = YES;
         imageV.contentMode = UIViewContentModeScaleAspectFill;
@@ -80,10 +71,8 @@
 }
 
 -(YMLabel *)ym_contentLable{
-    
-    
+      
     if(_ym_contentLable ==nil){
-        _isLoadcontentLable = YES;
         YMLabel *content = [[YMLabel alloc]init];
         content.numberOfLines = 0;
         _ym_contentLable = content;
@@ -154,123 +143,57 @@
 
 #pragma mark 设置自带控件
 
--(void)ym_setupImageView{
-    
-    //没有设置view 或者图片改变
-    if((self.ym_imageSize.height ==0 &&self.ym_imageSize.width==0)){
-        [self.ym_imageView sizeToFit];
-        //判断图片是否超出view大小
-        if(self.ym_imageView.ym_width >self.ym_width)
-            self.ym_imageView.ym_width = self.ym_width;
-    }
-
-}
-
--(void)ym_leftLabelType{
-    if(!_isLoadcontentLable){
-        return;
-    }
-    self.ym_contentLable.ym_x = self.ym_margin;
-    
-    if(_isLoadImageView){
-        self.ym_imageView.ym_y = self.ym_contentLable.ym_y;
-        self.ym_imageView.ym_x = CGRectGetMaxX(self.ym_contentLable.frame)+self.ym_margin;
-        return;
-    }
-    if(_isLoadSudukoView){
-        self.sudukoView.ym_y = self.ym_contentLable.ym_y;
-        self.sudukoView.ym_x = CGRectGetMaxX(self.ym_contentLable.frame)+self.ym_margin;
-    }
-    return;
-}
--(void)ym_rightLabelType{
-    if(!_isLoadcontentLable){
-        return;
-    }
-    if(_isLoadImageView){
-        self.ym_imageView.ym_y = 0;
-        self.ym_contentLable.ym_x = CGRectGetMaxX(self.ym_imageView.frame)+self.ym_margin;
-        return;
-    }
-    if(_isLoadSudukoView){
-        self.sudukoView.ym_y = 0;
-        self.ym_contentLable.ym_x = CGRectGetMaxX(self.sudukoView.frame)+self.ym_margin;
-    }
-    return;
-}
--(void)ym_buttomLabelType{
-    if(!_isLoadcontentLable)
-        return;
-    if(_isLoadImageView){
-        self.ym_imageView.ym_y = self.ym_margin;
-        self.ym_contentLable.ym_y = CGRectGetMaxY(self.ym_imageView.frame)+self.ym_margin;
-        return;
-    }
-    if(_isLoadSudukoView){
-        self.sudukoView.ym_y = self.ym_margin;
-        self.ym_contentLable.ym_y = CGRectGetMaxY(self.sudukoView.frame)+self.ym_margin;
-    }
-    return;
-}
--(void)ym_topLabelType{
-    
-    if(!_isLoadcontentLable)
-        return;
-    if(_isLoadImageView){
-        self.ym_imageView.ym_y = CGRectGetMaxY(self.ym_contentLable.frame)+self.ym_margin;
-        return;
-    }
-    if(_isLoadSudukoView)
-        self.sudukoView.ym_y = CGRectGetMaxY(self.ym_contentLable.frame)+self.ym_margin;
-    
-    return;
-}
 
 -(void)ym_startDraw{
-    [super ym_startDraw];
     
-    if(_isLoadcontentLable){
+    
+    if(_ym_contentLable){
         self.ym_contentLable.ym_width = self.ym_width;
         [self.ym_contentLable ym_countSize];
     }
-    if(_isLoadImageView){
-        [self ym_setupImageView];
+    if(_ym_imageView){
+        //没有设置view 或者图片改变
+        if((self.ym_imageSize.height ==0 &&self.ym_imageSize.width==0)){
+            [self.ym_imageView sizeToFit];
+            //判断图片是否超出view大小
+            if(self.ym_imageView.ym_width >self.ym_width)
+                self.ym_imageView.ym_width = self.ym_width;
+        }
     }
-    
-    if(_isLoadSudukoView){
-        self.sudukoView.ym_y = self.ym_contentLable.ym_bottom;
+    if(_sudukoView){
+        self.sudukoView.ym_y = _ym_contentLable.ym_bottom;
         [self ym_setupSudukoSubviews];
     }
     
-    switch (self.ym_describeType) {
-        case YMDescribeTypeLabelLeft:
-            [self ym_leftLabelType];
-            break;
-        case YMDescribeTypeLabelRight:
-            [self ym_rightLabelType];
-            break;
-        case YMDescribeTypeLabelButtom:
-            [self ym_buttomLabelType];
-            break;
-        case YMDescribeTypeLabelTop:
-            [self ym_topLabelType];
-            break;
-        case YMDescribeTypeLabelNone:
-            break;
-        default:
-            break;
+    if(_ym_contentLable&&_ym_imageView)
+    {
+        switch (self.ym_describeType) {
+            case YMDescribeTypeLabelLeft:
+                self.ym_contentLable.ym_x = self.ym_margin;
+                self.ym_imageView.ym_y = self.ym_contentLable.ym_y;
+                self.ym_imageView.ym_x = CGRectGetMaxX(self.ym_contentLable.frame)+self.ym_margin;
+                break;
+            case YMDescribeTypeLabelRight:
+                self.ym_contentLable.ym_x = CGRectGetMaxX(self.ym_imageView.frame)+self.ym_margin;
+                break;
+            case YMDescribeTypeLabelButtom:
+                self.ym_contentLable.ym_y = CGRectGetMaxY(self.ym_imageView.frame)+self.ym_margin;
+                break;
+            case YMDescribeTypeLabelTop:
+                self.ym_imageView.ym_y = CGRectGetMaxY(self.ym_contentLable.frame)+self.ym_margin;
+                break;
+            case YMDescribeTypeLabelNone:
+                break;
+            default:
+                break;
+        }
     }
     //根据子控件获取自身大小
-    self.ym_height = [self ym_GetSelfViewHeight];
-    if(self.isUserNormalLayout){
-        self.ym_height += self.ym_margin;
-    }
- 
+    [super ym_startDraw];
+    
 }
 
-
 #pragma -mark 九宫格布局
-
 //计算sudukoView的大小
 -(void)ym_countSudukoViewSize{
     

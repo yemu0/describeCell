@@ -11,12 +11,6 @@
 #import "YMLabel.h"
 @interface YMCellFooterView()
 
-@property(nonatomic,weak) UIView *toolsView;
-
-@property(nonatomic,weak) UIView *commentsView;
-
-@property (nonatomic,assign) BOOL isLoadToolsView;
-
 @property (nonatomic,strong) void(^btnClick)(UIButton *btn) ;
 
 @end
@@ -26,7 +20,6 @@
 #pragma mark 懒加载
 -(UIView *)toolsView{
     if(_toolsView ==nil){
-        _isLoadToolsView = YES;
         UIView *view = [[UIView alloc]init];
         _toolsView = view;
         [self addSubview:view];
@@ -39,6 +32,8 @@
     if(_commentsView ==nil){
         UIView *view = [[UIView alloc]init];
         _commentsView = view;
+        _commentsView.ym_width = self.ym_width;
+        _commentsView.backgroundColor = [UIColor colorWithRed:(241)/255.0 green:(241)/255.0 blue:(241)/255.0 alpha:(1)];
         [self addSubview:view];
     }
     return _commentsView;
@@ -49,23 +44,23 @@
     
 }
 -(void)ym_startDraw{
-    [super ym_startDraw];
-    
-    if(_isLoadToolsView == YES)
-        self.commentsView.ym_y = self.toolsView.ym_bottom + self.ym_margin;
     
     
+    if(_commentsView){
+        if(_toolsView)
+            self.commentsView.ym_y = self.toolsView.ym_bottom + self.ym_margin;
+    }
+ 
     //设置自身宽高
-    self.ym_height = [self ym_GetSelfViewHeight];
-    if(self.isUserNormalLayout)
-        self.ym_height += self.ym_margin;
-
+    [super ym_startDraw];
 }
 #pragma -mark 工具条
--(void)ym_addToolsViewWithNumber:(NSInteger)number
-                          margin:(NSInteger)margin
-                  toolViewHeight:(CGFloat)toolViewHeight
-                   setupSubviews:(void (^)(UIButton *, UIView *))btnBlock{
+-(void)ym_addToolsViewWithClass:(Class)viewClass
+                         Number:(NSInteger)number
+                         margin:(NSInteger)margin
+                 toolViewHeight:(CGFloat)toolViewHeight
+                  setupSubviews:(void(^)(id view,UIView *toolsView)) viewBlock{
+    
     
     if(self.toolsView.subviews.count ==number){
         return;
@@ -78,10 +73,19 @@
     NSInteger i = self.toolsView.subviews.count;
     for(;i<number;i++){
         btnX = i*btnW+i*margin;
-        UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(btnX, 0, btnW, toolViewHeight)];
+        UIButton *btn = [[viewClass alloc]initWithFrame:CGRectMake(btnX, 0, btnW, toolViewHeight)];
         [self.toolsView addSubview:btn];
-        btnBlock(btn,self.toolsView);
+        viewBlock(btn,self.toolsView);
     }
+ 
+}
+
+-(void)ym_addToolsViewWithNumber:(NSInteger)number
+                          margin:(NSInteger)margin
+                  toolViewHeight:(CGFloat)toolViewHeight
+                   setupSubviews:(void (^)(UIButton *, UIView *))btnBlock{
+    
+    [self ym_addToolsViewWithClass:[UIButton class] Number:number margin:margin toolViewHeight:toolViewHeight setupSubviews:btnBlock];
 }
 
 
@@ -113,7 +117,6 @@
                       setupComment:(commentBlock)comment{
     
     NSInteger count = self.commentsView.subviews.count;
-    
     //少于创建 显示
     for (NSInteger i=0; i<number; i++) {
         YMLabel *view;
@@ -136,9 +139,6 @@
     NSInteger index = 0;
     //计算评论view的大小
     self.commentsView.ym_height = 0;
-    self.commentsView.ym_width = self.ym_width;
-    
-    self.commentsView.backgroundColor = YMGlobalBGColor;
     
     for (YMLabel *commentView in self.commentsView.subviews) {
         
@@ -146,17 +146,14 @@
             continue;
         comment(commentView,index);
         commentView.ym_y = self.commentsView.ym_height;
-        
-        if(commentView.ym_width==0)
-            commentView.ym_width = self.ym_width;
-        
+        commentView.ym_width = self.commentsView.ym_width;
+
         [commentView ym_countSize];
         self.commentsView.ym_height += commentView.ym_height;
         index++;
     }
    
 }
-
 
 @end
 
